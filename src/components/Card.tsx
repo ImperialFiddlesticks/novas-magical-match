@@ -35,8 +35,8 @@ export default function Card({ card, onClick }: CardProps) {
         style={{ backfaceVisibility: "hidden", rotateY: 0 }}
       >
         <img
-          src="/smoke.png"
-          alt="Magic smoke"
+          src="/green-tea.png"
+          alt="Green Tea"
           className="card-back"
           draggable={false}
         />

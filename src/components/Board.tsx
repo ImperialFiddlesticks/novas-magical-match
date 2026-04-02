@@ -12,7 +12,9 @@ export default function Board({ cards, onCardClick, pairCount }: BoardProps) {
   return (
     <main
       className="game-board"
-      style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+      style={{
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 170px))`,
+      }}
     >
       {cards.map((card) => (
         <Card key={card.id} card={card} onClick={() => onCardClick(card.id)} />

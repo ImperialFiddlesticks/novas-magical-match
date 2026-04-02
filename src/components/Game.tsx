@@ -3,6 +3,7 @@ import Board from "./Board";
 import { buildDeck } from "../game/deck";
 import { allAnimals } from "../data/animals";
 import PlayerPile from "./PlayerPile";
+import WinnerModal from "./WinnerModal";
 
 function determineWinner(
   playerOneScore: number,
@@ -43,6 +44,10 @@ export default function Game() {
     setFlippedIds([]);
     setLockBoard(false);
     setIsPlayerOne(true);
+    setPlayerOneScore(0);
+    setPlayerTwoScore(0);
+    setPlayerOneCards([]);
+    setPlayerTwoCards([]);
   }
   function handleMatch(id1: string, id2: string) {
     setTimeout(() => {
@@ -118,24 +123,28 @@ export default function Game() {
     }
   }
   const didWin = matches === totalPairs;
+  const winner = determineWinner(playerOneScore, playerTwoScore);
 
   return (
     <div className="game-container">
-      <h1>Nova's Magical Match</h1>
-      <div className="info-box">
-        <div>
-          {" "}
-          <span>Player one: {playerOneScore}</span>
-          <span>Player two: {playerTwoScore}</span>
+      {didWin && (
+        <WinnerModal
+          winner={winner}
+          playerOneScore={playerOneScore}
+          playerTwoScore={playerTwoScore}
+          onNewGame={resetGame}
+        />
+      )}
+      <header className="game-header">
+        <div className="header-title">
+          <h1>Nova's Magical Match</h1>
+          <p>Match the animal friends!</p>
         </div>
-        <div>Turns: {turns}</div>
-        <div>Current turn: {isPlayerOne ? "Player One" : "Player Two"}</div>
 
-        <div className="button-box">
-          <div className="new-game-box">
-            <button className="game-button" onClick={resetGame}>
-              New Game
-            </button>
+        <div className="header-controls">
+          <div className="game-turns">
+            <p className="game-text">Turns</p>
+            <p className="game-text-bold">{turns}</p>{" "}
           </div>
           <div className="difficulty-box">
             <button
@@ -151,35 +160,60 @@ export default function Game() {
               Hard
             </button>
           </div>
+          <button className="game-button" onClick={resetGame}>
+            New Game
+          </button>
         </div>
+      </header>
 
-        {didWin && (
-          <div>
-            <strong>Winner:</strong>{" "}
-            {determineWinner(playerOneScore, playerTwoScore)}
+      <div
+        className={`game-layout ${pairCount === 6 ? "easy-layout" : "hard-layout"}`}
+      >
+        <div className="player-container">
+          <div className="player-header-row">
+            <div className="player-score">
+              <p className="game-text">Score:</p>
+              <p className="game-text-bold"> {playerOneScore}</p>
+            </div>
+            <h3 className="player-title">Player 1</h3>
           </div>
-        )}
+          <PlayerPile
+            playerName="Player One"
+            cardIds={playerOneCards}
+            cards={cards}
+          />
+        </div>
+        <div className="board-column">
+          <Board
+            cards={cards}
+            onCardClick={handleCardClick}
+            pairCount={pairCount}
+          />
+          <div className="game-button current-turn-display">
+            Current turn: {isPlayerOne ? "Player One" : "Player Two"}
+          </div>
+        </div>
+        <div className="player-container">
+          <div className="player-header-row">
+            <div className="player-score">
+              <p className="game-text">Score:</p>
+              <p className="game-text-bold"> {playerTwoScore}</p>
+            </div>
+            <h3 className="player-title">Player 2</h3>
+          </div>
+          <PlayerPile
+            playerName="Player Two"
+            cardIds={playerTwoCards}
+            cards={cards}
+          />
+        </div>
       </div>
-      <div className="game-layout">
-        <PlayerPile
-          playerName="Player One"
-          cardIds={playerOneCards}
-          cards={cards}
-        />
-        <Board
-          cards={cards}
-          onCardClick={handleCardClick}
-          pairCount={pairCount}
-        />
-        <PlayerPile
-          playerName="Player Two"
-          cardIds={playerTwoCards}
-          cards={cards}
-        />
-      </div>
-      <footer>
+      <footer className="game-footer">
         {" "}
-        <a href="https://www.freepik.com/free-vector/happy-funny-cartoon-animals-set_8609221.htm#fromView=search&page=1&position=10&uuid=fafb8b93-4555-4511-86a4-82ff7e46093d&query=cute+animals">
+        <a
+          className="footer-link"
+          href="https://www.freepik.com/free-vector/happy-funny-cartoon-animals-set_8609221.htm#fromView=search&page=1&position=10&uuid=fafb8b93-4555-4511-86a4-82ff7e46093d&query=cute+animals"
+        >
           Image by pch.vector on Freepik
         </a>
       </footer>

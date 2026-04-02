@@ -11,22 +11,22 @@ export default function PlayerPile({
   cardIds,
   cards,
 }: PlayerPileProps) {
+  const uniquePairCards = cardIds
+    .map((id) => cards.find((c) => c.id === id))
+    .filter((c): c is CardModel => c !== undefined)
+    .filter((c, i, arr) => arr.findIndex((x) => x.pairId === c.pairId) === i);
+
   return (
     <div className="player-pile">
-      <h3>{playerName}</h3>
       <div className="pile-cards">
-        {cardIds.map((cardId) => {
-          const card = cards.find((c) => c.id === cardId);
-          if (!card) return null;
-          return (
-            <img
-              alt={card.pairId}
-              key={card.id}
-              src={card.img}
-              className="won-cards"
-            />
-          );
-        })}
+        {uniquePairCards.map((card) => (
+          <img
+            alt={card.pairId}
+            key={card.id}
+            src={card.img}
+            className="won-cards"
+          />
+        ))}
       </div>
     </div>
   );

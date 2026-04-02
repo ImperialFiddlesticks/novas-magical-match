@@ -1,10 +1,20 @@
 :root {
-  background-color: rgb(230, 217, 248);
-  /* background: radial-gradient(circle at top, #fce7f3, #ede9fe, #dbeafe); */
-  /* color: rgb(158, 82, 199); */
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #bae8fc 60%, #bcf397 100%);
+  background-repeat: no-repeat;
   font-family:
     "Baloo 2",
     system-ui,
@@ -14,52 +24,145 @@ body {
     Arial,
     sans-serif;
 }
-
-h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  background: linear-gradient(
-    90deg,
-    #2563eb,
-    /* deep blue */ #7c3aed,
-    /* vivid purple */ #db2777,
-    /* rich pink */ #f59e0b /* warm gold sparkle */
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  letter-spacing: 0.3rem;
-  text-shadow: 0 2px 8px rgba(196, 181, 253, 0.5);
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  gap: 1.25rem;
+  padding: 0;
+}
+.game-header {
+  width: 100%;
+  display: flex;
+  height: auto;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  padding: 1rem;
+}
+.header-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.game-button,
-.difficulty-button {
-  background: white;
-  border: 5px solid rgb(188, 150, 209);
-  padding: 20px;
-  width: auto;
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+  padding-right: 1rem;
+}
+
+.header-title h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #018b46;
+
+  letter-spacing: 0.3rem;
+  text-shadow: 0 2px 8px rgba(196, 181, 253, 0.5);
+  margin: 0;
+  margin-left: 1rem;
+}
+.header-title p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  font-style: italic;
+  color: rgb(1, 175, 73);
+  margin: 0;
+  margin-left: 1.5rem;
+}
+.game-turns {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 12px;
+  border-radius: 12px;
+}
+.game-text {
+  color: #00ac56;
+  margin: 0;
+}
+
+.game-text-bold {
+  color: #016b36;
+  font-weight: 700;
+  margin: 0;
+}
+
+.game-button {
+  background-color: #00ac56;
+  width: 150px;
+  height: 50px;
+  border: none;
   border-radius: 9999px;
   font-family: "Baloo 2";
   font-weight: 700;
   font-size: 1.5rem;
-  color: #7c3aed;
-  margin: 20px;
+  color: white;
+}
+.difficulty-box {
+  display: flex;
+
+  align-items: center;
+  gap: 1rem;
+}
+.difficulty-button {
+  background-color: #ffffff;
+  width: 100px;
+  height: 50px;
+  border: 2px solid #00ac56;
+  border-radius: 9999px;
+
+  font-weight: 700;
+  font-size: 1rem;
+  color: #016b36;
 }
 .game-board {
-  max-width: 800px;
+  width: min(100%, 960px);
   display: grid;
-  /* grid-template-columns: repeat(4, 1fr); */
+  justify-content: center;
+  justify-items: center;
   gap: 12px;
 }
 .game-layout {
   display: flex;
   justify-content: space-around;
+  align-items: flex-start;
+  width: 100%;
+  gap: 1rem;
 }
 
-.memory-card,
-.won-cards {
-  width: 170px;
-  height: 180px;
+.board-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.current-turn-display {
+  width: auto;
+  min-width: 230px;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memory-card {
+  width: 100%;
+  max-width: 170px;
+  aspect-ratio: 17 / 18;
+  height: auto;
   margin: 0;
   box-sizing: border-box;
   padding: 0;
@@ -68,6 +171,18 @@ h1 {
   position: relative;
   display: flex;
   background-color: white;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.won-cards {
+  width: 72px;
+  height: 76px;
+  margin: 0;
+  box-sizing: border-box;
+  border-radius: 14px;
+  object-fit: cover;
+  background-color: white;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .card-front {
@@ -80,7 +195,7 @@ h1 {
 .card-back {
   width: 90%;
   height: 90%;
-  /* object-fit: contain; */
+
   position: absolute;
   margin: 0;
 }
@@ -103,3 +218,121 @@ h1 {
 .card-animate.back {
   transform: rotateY(0deg);
 } */
+
+.player-score {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 12px;
+  border-radius: 9999px;
+  margin: 20px;
+}
+.player-header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.player-header-row .player-score {
+  margin: 12px;
+}
+
+.player-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: #016b36;
+  font-size: 1.5rem;
+}
+
+.player-container {
+  height: auto;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  margin: 15px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.game-layout.easy-layout .player-container {
+  min-height: 564px;
+}
+
+.game-layout.hard-layout .player-container {
+  min-height: 756px;
+}
+
+.pile-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  gap: 8px;
+  padding: 8px 10px 12px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal {
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #016b36;
+  margin: 0;
+}
+
+.modal-winner {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00ac56;
+  margin: 0;
+}
+
+.modal-scores {
+  display: flex;
+  gap: 2rem;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.game-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding: 0.35rem 0 0.2rem;
+}
+
+.footer-link {
+  color: #018a46;
+  font-size: 0.85rem;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.footer-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
