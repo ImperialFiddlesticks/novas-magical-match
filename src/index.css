@@ -249,16 +249,15 @@ body {
 }
 
 .player-score {
-  width: clamp(2.6rem, 8vw, 3.2rem);
-  height: clamp(2.6rem, 8vw, 3.2rem);
+  width: clamp(2.8rem, 9vw, 3.5rem);
+  height: clamp(2.8rem, 9vw, 3.5rem);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: white;
-  padding: 12px;
+  padding: 20px;
   border-radius: 9999px;
-  margin: 20px;
 }
 .player-header-row {
   position: relative;
