@@ -4,6 +4,9 @@ import { buildDeck } from "../game/deck";
 import { allAnimals } from "../data/animals";
 import PlayerPile from "./PlayerPile";
 import WinnerModal from "./WinnerModal";
+import { Menu } from "lucide-react";
+
+const mobileBreakpoint = 900;
 
 function determineWinner(
   playerOneScore: number,
@@ -21,6 +24,11 @@ function determineWinner(
 export default function Game() {
   const startingPairs = 6;
   const [pairCount, setPairCount] = useState(startingPairs);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined"
+      ? window.innerWidth <= mobileBreakpoint
+      : false,
+  );
   const activeAnimals = useMemo(
     () => allAnimals.slice(0, pairCount),
     [pairCount],
@@ -36,6 +44,23 @@ export default function Game() {
   const [playerTwoScore, setPlayerTwoScore] = useState(0);
   const [playerOneCards, setPlayerOneCards] = useState<string[]>([]);
   const [playerTwoCards, setPlayerTwoCards] = useState<string[]>([]);
+  const [playerOneName, setPlayerOneName] = useState("Player One");
+  const [playerTwoName, setPlayerTwoName] = useState("Player Two");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const nextIsMobile = window.innerWidth <= mobileBreakpoint;
+      setIsMobile(nextIsMobile);
+
+      if (!nextIsMobile) {
+        setIsMenuOpen(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   function resetGame() {
     setCards(buildDeck(activeAnimals));
@@ -86,6 +111,19 @@ export default function Game() {
     resetGame();
   }, [activeAnimals]);
 
+  function handleMenuToggle() {
+    setIsMenuOpen((prev) => !prev);
+  }
+  function handleDifficultyChange(nextPairCount: number) {
+    setPairCount(nextPairCount);
+    setIsMenuOpen(false);
+  }
+
+  function handleNewGame() {
+    resetGame();
+    setIsMenuOpen(false);
+  }
+
   function handleCardClick(cardId: string) {
     if (lockBoard) return;
     const clicked = cards.find((c) => c.id === cardId);
@@ -133,6 +171,8 @@ export default function Game() {
           playerOneScore={playerOneScore}
           playerTwoScore={playerTwoScore}
           onNewGame={resetGame}
+          playerOneName={playerOneName}
+          playerTwoName={playerTwoName}
         />
       )}
       <header className="game-header">
@@ -140,8 +180,34 @@ export default function Game() {
           <h1>Nova's Magical Match</h1>
           <p>Match the animal friends!</p>
         </div>
-
-        <div className="header-controls">
+        <button
+          type="button"
+          className="menu-toggle"
+          onClick={handleMenuToggle}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-controls"
+          aria-label="Toggle game controls"
+        >
+          <Menu size={32} color="#018b46" />
+        </button>
+        <div
+          id="mobile-controls"
+          className={`header-controls ${isMenuOpen ? "is-open" : ""}`}
+        >
+          <input
+            type="text"
+            placeholder="Fill in your name..."
+            value={playerOneName}
+            onChange={(e) => setPlayerOneName(e.target.value)}
+            className="name-input"
+          />
+          <input
+            type="text"
+            placeholder="Fill in your name..."
+            value={playerTwoName}
+            onChange={(e) => setPlayerTwoName(e.target.value)}
+            className="name-input"
+          />
           <div className="game-turns">
             <p className="game-text">Turns</p>
             <p className="game-text-bold">{turns}</p>{" "}
@@ -149,63 +215,65 @@ export default function Game() {
           <div className="difficulty-box">
             <button
               className="difficulty-button"
-              onClick={() => setPairCount(6)}
+              onClick={() => handleDifficultyChange(6)}
             >
               Easy
             </button>
             <button
               className="difficulty-button"
-              onClick={() => setPairCount(12)}
+              onClick={() => handleDifficultyChange(12)}
             >
               Hard
             </button>
           </div>
-          <button className="game-button" onClick={resetGame}>
+          <button className="game-button" onClick={handleNewGame}>
             New Game
           </button>
         </div>
       </header>
-
-      <div
-        className={`game-layout ${pairCount === 6 ? "easy-layout" : "hard-layout"}`}
-      >
-        <div className="player-container">
-          <div className="player-header-row">
-            <div className="player-score">
-              <p className="game-text">Score:</p>
-              <p className="game-text-bold"> {playerOneScore}</p>
+      <div className="game-board-container">
+        <div
+          className={`game-layout ${pairCount === 6 ? "easy-layout" : "hard-layout"}`}
+        >
+          <div className="player-container">
+            <div className="player-header-row">
+              <div className="player-score">
+                <p className="game-text">Score:</p>
+                <p className="game-text-bold"> {playerOneScore}</p>
+              </div>
+              <h3 className="player-title">{playerOneName}</h3>
             </div>
-            <h3 className="player-title">Player 1</h3>
+            <PlayerPile
+              playerName={playerOneName}
+              cardIds={playerOneCards}
+              cards={cards}
+            />
           </div>
-          <PlayerPile
-            playerName="Player One"
-            cardIds={playerOneCards}
-            cards={cards}
-          />
-        </div>
-        <div className="board-column">
-          <Board
-            cards={cards}
-            onCardClick={handleCardClick}
-            pairCount={pairCount}
-          />
-          <div className="game-button current-turn-display">
-            Current turn: {isPlayerOne ? "Player One" : "Player Two"}
-          </div>
-        </div>
-        <div className="player-container">
-          <div className="player-header-row">
-            <div className="player-score">
-              <p className="game-text">Score:</p>
-              <p className="game-text-bold"> {playerTwoScore}</p>
+          <div className="board-column">
+            <Board
+              cards={cards}
+              onCardClick={handleCardClick}
+              pairCount={pairCount}
+              isMobile={isMobile}
+            />
+            <div className="game-button current-turn-display">
+              Current turn: {isPlayerOne ? playerOneName : playerTwoName}
             </div>
-            <h3 className="player-title">Player 2</h3>
           </div>
-          <PlayerPile
-            playerName="Player Two"
-            cardIds={playerTwoCards}
-            cards={cards}
-          />
+          <div className="player-container">
+            <div className="player-header-row">
+              <div className="player-score">
+                <p className="game-text">Score:</p>
+                <p className="game-text-bold"> {playerTwoScore}</p>
+              </div>
+              <h3 className="player-title">{playerTwoName}</h3>
+            </div>
+            <PlayerPile
+              playerName={playerTwoName}
+              cardIds={playerTwoCards}
+              cards={cards}
+            />
+          </div>
         </div>
       </div>
       <footer className="game-footer">
