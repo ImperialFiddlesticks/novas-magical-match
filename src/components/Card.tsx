@@ -35,7 +35,7 @@ export default function Card({ card, onClick }: CardProps) {
         style={{ backfaceVisibility: "hidden", rotateY: 0 }}
       >
         <img
-          src="/green-tea.png"
+          src={`${import.meta.env.BASE_URL}green-tea.png`}
           alt="Green Tea"
           className="card-back"
           draggable={false}
